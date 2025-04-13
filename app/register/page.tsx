@@ -1,8 +1,16 @@
+'use client'
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Building } from "lucide-react"
-import { RegisterForm } from "@/components/register-form"
 
 export default function RegisterPage() {
+  const router = useRouter()
+  
+  useEffect(() => {
+    router.push('/sign-up')
+  }, [router])
+  
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12">
@@ -13,14 +21,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md space-y-6">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold">Create an account</h1>
-            <p className="text-muted-foreground">Enter your information to get started</p>
-          </div>
-          <RegisterForm />
-          <div className="text-center text-sm">
-            Already have an account?{" "}
-            <Link href="/login" className="font-medium text-primary underline underline-offset-4">
-              Login
-            </Link>
+            <p className="text-muted-foreground">Redirecting to signup page...</p>
           </div>
         </div>
       </div>

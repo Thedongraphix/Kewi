@@ -1,40 +1,124 @@
-import type React from "react"
-import { DashboardNav } from "@/components/dashboard-nav"
-import { UserNav } from "@/components/user-nav"
-import { MobileNav } from "@/components/mobile-nav"
-import { UserProfileSidebar } from "@/components/user-profile-sidebar"
-import { Building } from "lucide-react"
+"use client"
+
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { Building, LayoutDashboard, Home, User, FileText, CreditCard, Settings, Bell, LogOut } from "lucide-react"
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarTrigger,
+  SidebarContent,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarSeparator,
+  SidebarInset,
+} from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+import { useClerk, useAuth } from "@clerk/nextjs"
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const router = useRouter()
+  const { signOut } = useClerk()
+  const { isLoaded, isSignedIn } = useAuth()
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push('/login')
+    }
+  }, [isLoaded, isSignedIn, router])
+
+  const handleSignOut = async () => {
+    await signOut(() => {
+      router.push('/')
+    })
+  }
+
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center px-4 sm:px-6">
-          <Link href="/dashboard" className="flex items-center gap-2 md:mr-6">
-            <Building className="h-6 w-6" />
-            <span className="font-bold hidden md:inline-block">KEWI Hostel</span>
-          </Link>
-          <MobileNav />
-          <div className="hidden md:flex md:flex-1">
-            <div className="ml-auto flex items-center space-x-4">
-              <UserNav />
+    <SidebarProvider defaultOpen={true}>
+      <div className="flex min-h-screen">
+        <Sidebar>
+          <SidebarHeader>
+            <Link href="/" className="flex items-center gap-2 px-2">
+              <Building className="h-6 w-6" />
+              <span className="text-lg font-bold">KEWI Hostel</span>
+            </Link>
+          </SidebarHeader>
+          <SidebarContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive>
+                  <Link href="/dashboard">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/dashboard/application">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Application
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/dashboard/payments">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Payments
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/dashboard/profile">
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarContent>
+          <SidebarFooter>
+            <SidebarSeparator />
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <button onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </button>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarFooter>
+        </Sidebar>
+        <SidebarInset>
+          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
+            <SidebarTrigger />
+            <div className="ml-auto flex items-center gap-4">
+              <Button variant="ghost" size="icon">
+                <Bell className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <User className="h-4 w-4" />
+              </Button>
             </div>
-          </div>
-        </div>
-      </header>
-      <div className="flex-1 container grid grid-cols-1 md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] px-4 sm:px-6">
-        <aside className="hidden md:flex flex-col border-r pr-6 pt-6">
-          <DashboardNav className="flex-1" />
-          <UserProfileSidebar />
-        </aside>
-        <main className="flex-1 p-4 sm:p-6 overflow-auto">{children}</main>
+          </header>
+          <main className="flex-1 space-y-6 p-6">
+            {children}
+          </main>
+        </SidebarInset>
       </div>
-    </div>
+    </SidebarProvider>
   )
 }
 

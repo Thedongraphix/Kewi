@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -7,13 +10,24 @@ import { InfoIcon } from "lucide-react"
 import { ApplicationStatusCard } from "@/components/application-status-card"
 import { RecentNotifications } from "@/components/recent-notifications"
 import { RoomAllocationStatus } from "@/components/room-allocation-status"
+import { useUser } from "@clerk/nextjs"
 
 export default function DashboardPage() {
+  const { user, isLoaded } = useUser()
+  
+  if (!isLoaded) {
+    return <div className="flex justify-center items-center h-full">Loading dashboard...</div>
+  }
+
+  const firstName = user?.firstName || 'User'
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">Welcome back, John! Here's an overview of your hostel application.</p>
+        <p className="text-sm sm:text-base text-muted-foreground">
+          Welcome back, {firstName}! Here's an overview of your hostel application.
+        </p>
       </div>
 
       <Alert>

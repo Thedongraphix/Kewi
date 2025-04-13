@@ -1,101 +1,82 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
 import { Button } from "@/components/ui/button"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { useToast } from "@/hooks/use-toast"
-import { createSupabaseClient } from "@/utils/supabase"
+import { useToast } from "@/components/ui/use-toast"
+
+const formSchema = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(6, {
+    message: "Password must be at least 6 characters.",
+  }),
+})
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  })
   const router = useRouter()
   const { toast } = useToast()
-  const supabase = createSupabaseClient()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value
-    })
-  }
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setIsLoading(true)
-
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      })
-
-      if (error) {
-        throw error
-      }
-
-      toast({
-        title: "Login successful",
-        description: "Welcome back to KEWI Hostel Allocation System",
-      })
-      router.push("/dashboard")
-    } catch (error: any) {
-      toast({
-        title: "Login failed",
-        description: error.message || "Invalid email or password",
-        variant: "destructive"
-      })
-    } finally {
-      setIsLoading(false)
-    }
+  // This is a placeholder function since we're using Clerk directly now
+  function onSubmit() {
+    // Redirecting to Clerk's sign-in page
+    router.push("/sign-in")
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input 
-          id="email" 
-          type="email" 
-          placeholder="m.example@kewi.edu" 
-          required 
-          onChange={handleChange}
-          value={formData.email}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="your.email@example.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-          <Button variant="link" className="p-0 h-auto text-sm" asChild>
-            <a href="/forgot-password">Forgot password?</a>
-          </Button>
-        </div>
-        <Input 
-          id="password" 
-          type="password" 
-          required 
-          onChange={handleChange}
-          value={formData.password}
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex items-center justify-between">
+                <FormLabel>Password</FormLabel>
+                <Link href="/forgot-password" className="text-xs text-primary">
+                  Forgot your password?
+                </Link>
+              </div>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      <div className="flex items-center space-x-2">
-        <Checkbox id="remember" />
-        <Label htmlFor="remember" className="text-sm font-normal">
-          Remember me
-        </Label>
-      </div>
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Logging in..." : "Login"}
-      </Button>
-    </form>
+        <Button disabled={isLoading} type="submit" className="w-full">
+          {isLoading ? "Logging in..." : "Log in"}
+        </Button>
+      </form>
+    </Form>
   )
 }
-

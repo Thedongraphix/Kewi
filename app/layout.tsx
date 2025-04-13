@@ -4,7 +4,7 @@ import { Jost } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
-import { AuthProvider } from "@/contexts/AuthContext"
+import { ClerkProvider } from "@clerk/nextjs"
 
 const jost = Jost({ 
  subsets: ["latin"],
@@ -24,12 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${jost.variable} font-sans`}>
-        <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <ClerkProvider>
+          <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light" enableSystem={false} disableTransitionOnChange>
             {children}
             <Toaster />
           </ThemeProvider>
-        </AuthProvider>
+        </ClerkProvider>
       </body>
     </html>
   )
