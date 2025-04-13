@@ -1,20 +1,9 @@
 import { SignIn } from "@clerk/nextjs";
 
-export default function Page() {
+export default function SignInPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <SignIn 
-        redirectUrl="/dashboard" 
-        appearance={{
-          elements: {
-            formButtonPrimary: "bg-primary hover:bg-primary/90",
-            card: "shadow-md rounded-md",
-          },
-          variables: {
-            colorPrimary: "hsl(var(--primary))",
-          }
-        }}
-      />
+    <div className="flex justify-center items-center min-h-screen">
+      <SignIn />
     </div>
   );
 } 

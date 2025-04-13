@@ -1,8 +1,7 @@
 'use client'
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Building } from "lucide-react"
+import { Loader2 } from "lucide-react"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -12,13 +11,8 @@ export default function RegisterPage() {
   }, [router])
   
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12">
-        <Link href="/" className="mb-8 flex items-center gap-2">
-          <Building className="h-6 w-6" />
-          <span className="font-bold text-xl">KEWI Hostel</span>
-        </Link>
-      </div>
+    <div className="flex h-screen w-full items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
     </div>
   )
 }
