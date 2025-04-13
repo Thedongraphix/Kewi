@@ -8,7 +8,7 @@ export default function RegisterPage() {
   const router = useRouter()
   
   useEffect(() => {
-    router.push('/sign-up')
+    router.replace('/sign-up')
   }, [router])
   
   return (

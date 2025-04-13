@@ -31,9 +31,18 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.push('/login')
+      router.push('/sign-in')
     }
   }, [isLoaded, isSignedIn, router])
+
+  // If auth is still loading or user is not signed in, don't show the dashboard yet
+  if (!isLoaded || !isSignedIn) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    )
+  }
 
   const handleSignOut = async () => {
     await signOut(() => {

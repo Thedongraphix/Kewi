@@ -8,7 +8,7 @@ export default function Login() {
   const router = useRouter()
   
   useEffect(() => {
-    router.push('/sign-in')
+    router.replace('/sign-in')
   }, [router])
   
   return (
