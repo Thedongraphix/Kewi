@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Building, LayoutDashboard, Home, User, FileText, CreditCard, Settings, Bell, LogOut } from "lucide-react"
+import { Building, LayoutDashboard, Home, User, FileText, CreditCard, Settings, Bell, LogOut, Loader2 } from "lucide-react"
 import {
   SidebarProvider,
   Sidebar,
@@ -39,7 +39,7 @@ export default function DashboardLayout({
   if (!isLoaded || !isSignedIn) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <p>Loading...</p>
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
   }

@@ -18,12 +18,6 @@ export default function RegisterPage() {
           <Building className="h-6 w-6" />
           <span className="font-bold text-xl">KEWI Hostel</span>
         </Link>
-        <div className="w-full max-w-md space-y-6">
-          <div className="space-y-2 text-center">
-            <h1 className="text-3xl font-bold">Create an account</h1>
-            <p className="text-muted-foreground">Redirecting to signup page...</p>
-          </div>
-        </div>
       </div>
     </div>
   )
